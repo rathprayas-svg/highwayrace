@@ -1233,12 +1233,31 @@
             ctx.restore();
         }
 
+        // Helper for rounded rectangles, for browsers that don't support ctx.roundRect
+        function drawRoundedRect(x, y, width, height, radius) {
+            if (ctx.roundRect) {
+                ctx.roundRect(x, y, width, height, radius);
+                return;
+            }
+            const r = typeof radius === 'number' ? radius : 0;
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + width - r, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+            ctx.lineTo(x + width, y + height - r);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+            ctx.lineTo(x + r, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+        }
+
         // Sport Car - Sleek and low
         function drawSportCar(x, y, width, height, color) {
             // Main body
             ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.roundRect(x, y + 10, width, height - 10, 8);
+            drawRoundedRect(x, y + 10, width, height - 10, 8);
             ctx.fill();
             
             // Hood (sloped front)
@@ -1309,8 +1328,7 @@
         function drawSedanCar(x, y, width, height, color) {
             // Main body
             ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.roundRect(x, y + 15, width, height - 15, 10);
+            drawRoundedRect(x, y + 15, width, height - 15, 10);
             ctx.fill();
             
             // Hood (flat)
@@ -1380,8 +1398,7 @@
             
             // Truck cab (front)
             ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.roundRect(x, y + 10, width, height * 0.42, 8);
+            drawRoundedRect(x, y + 10, width, height * 0.42, 8);
             ctx.fill();
             
             // Hood
@@ -1425,8 +1442,7 @@
         function drawRacingCar(x, y, width, height, color) {
             // Main body (lower and wider look)
             ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.roundRect(x, y + 8, width, height - 8, 6);
+            drawRoundedRect(x, y + 8, width, height - 8, 6);
             ctx.fill();
             
             // Nose (pointed front)
