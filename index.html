@@ -40,6 +40,7 @@
             background: #34495e;
             width: 100%;
             height: 100%;
+            touch-action: none;
         }
 
         .game-ui {
@@ -246,6 +247,182 @@
             font-size: 14px;
             color: #ecf0f1;
         }
+
+        .mobile-controls {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 520px;
+            z-index: 20;
+            pointer-events: auto;
+            gap: 12px;
+        }
+
+        .mobile-controls .direction-pad,
+        .mobile-controls .action-buttons {
+            display: grid;
+            gap: 10px;
+        }
+
+        .mobile-controls .direction-pad {
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 60px);
+            justify-items: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .mobile-controls .direction-pad button {
+            width: 100%;
+            height: 60px;
+            border-radius: 18px;
+            border: none;
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            touch-action: manipulation;
+        }
+
+        .mobile-controls .action-buttons {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .mobile-controls .action-buttons button {
+            width: 100%;
+            min-height: 52px;
+            border-radius: 18px;
+            border: none;
+            background: rgba(243, 156, 18, 0.95);
+            color: #2c3e50;
+            font-size: 13px;
+            font-weight: bold;
+            touch-action: manipulation;
+        }
+
+        .mobile-controls .action-buttons button.secondary {
+            background: rgba(52, 152, 219, 0.95);
+            color: white;
+        }
+
+        .control-btn:active,
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .game-ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                font-size: 16px;
+            }
+
+            .start-screen h1 {
+                font-size: 36px;
+            }
+
+            .start-screen p,
+            .controls-info p,
+            .author-text,
+            .customization-section h3 {
+                font-size: 16px;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 16px 20px;
+                font-size: 18px;
+            }
+
+            .customization-section {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .color-options,
+            .style-options {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .color-btn,
+            .style-btn {
+                flex: 1 1 40px;
+                min-width: 40px;
+            }
+
+            .game-over-screen h1 {
+                font-size: 34px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                min-height: 100vh;
+                overflow: hidden;
+            }
+
+            .game-container {
+                height: 100vh;
+            }
+
+            .score-display,
+            .lives-display {
+                font-size: 22px;
+                top: 16px;
+            }
+
+            .score-display {
+                left: 12px;
+            }
+
+            .lives-display {
+                right: 12px;
+            }
+
+            .controls-info {
+                display: none;
+            }
+
+            .mobile-controls {
+                display: grid;
+                width: calc(100% - 24px);
+                margin: 0 auto;
+                bottom: 12px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .mobile-controls .direction-pad {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-rows: repeat(2, 58px);
+            }
+
+            .mobile-controls .direction-pad button {
+                height: 58px;
+                font-size: 18px;
+            }
+
+            .mobile-controls .action-buttons {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 8px;
+            }
+
+            .mobile-controls .action-buttons button {
+                min-height: 54px;
+                font-size: 13px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -255,6 +432,22 @@
         <div class="game-ui">
             <div class="score-display">Score: <span id="score">0</span></div>
             <div class="lives-display" id="lives">❤️❤️❤️</div>
+            <div class="mobile-controls" id="mobileControls">
+                <div class="direction-pad">
+                    <button class="control-btn" data-key="ArrowLeft">◀</button>
+                    <button class="control-btn" data-key="ArrowUp">▲</button>
+                    <button class="control-btn" data-key="ArrowRight">▶</button>
+                    <div></div>
+                    <button class="control-btn" data-key="ArrowDown">▼</button>
+                    <div></div>
+                </div>
+                <div class="action-buttons">
+                    <button class="control-btn secondary" id="btnHorn">Horn</button>
+                    <button class="control-btn" id="btnLeftSignal">Left</button>
+                    <button class="control-btn" id="btnRightSignal">Right</button>
+                    <button class="control-btn" id="btnHazard">Hazard</button>
+                </div>
+            </div>
         </div>
 
         <div class="start-screen" id="startScreen">
@@ -292,8 +485,9 @@
                 <p>⬆️ Up Arrow / W - Accelerate</p>
                 <p>⬇️ Down Arrow / S - Brake</p>
                 <p>🚦 Z - Left Turn Signal</p>
-                <p>� C - Right Turn Signal</p>
-                <p>�📯 H - Honk Horn</p>
+                <p>➡️ C - Right Turn Signal</p>
+                <p>⚠️ X - Hazard Lights</p>
+                <p>📯 H - Honk Horn</p>
             </div>
         </div>
 
@@ -629,6 +823,47 @@
 
         // Input handling
         const keys = {};
+
+        function setControlKey(key, value) {
+            keys[key] = value;
+        }
+
+        function setupMobileControls() {
+            const directionalButtons = document.querySelectorAll('.control-btn[data-key]');
+            directionalButtons.forEach(btn => {
+                const key = btn.dataset.key;
+                btn.addEventListener('pointerdown', () => setControlKey(key, true));
+                btn.addEventListener('pointerup', () => setControlKey(key, false));
+                btn.addEventListener('pointerleave', () => setControlKey(key, false));
+                btn.addEventListener('touchend', () => setControlKey(key, false));
+            });
+
+            document.getElementById('btnHorn').addEventListener('pointerdown', () => playHornSound());
+            document.getElementById('btnLeftSignal').addEventListener('pointerdown', () => {
+                if (!leftIndicatorActive && !rightIndicatorActive) {
+                    leftIndicatorActive = true;
+                    blinkCount = 0;
+                    leftIndicator = true;
+                }
+            });
+            document.getElementById('btnRightSignal').addEventListener('pointerdown', () => {
+                if (!rightIndicatorActive && !leftIndicatorActive) {
+                    rightIndicatorActive = true;
+                    blinkCount = 0;
+                    rightIndicator = true;
+                }
+            });
+            document.getElementById('btnHazard').addEventListener('pointerdown', () => {
+                hazardLights = !hazardLights;
+                if (hazardLights) {
+                    leftIndicator = true;
+                    rightIndicator = true;
+                    blinkCount = 0;
+                }
+            });
+        }
+
+        setupMobileControls();
 
         document.addEventListener('keydown', (e) => {
             keys[e.key] = true;
